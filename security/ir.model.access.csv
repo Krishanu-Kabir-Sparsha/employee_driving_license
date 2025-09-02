@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_employee_driving_user,hr.employee.driving.user,hr.model_hr_employee,base.group_user,1,0,0,0
+access_hr_employee_driving_officer,hr.employee.driving.officer,hr.model_hr_employee,hr.group_hr_user,1,1,0,0
+access_hr_employee_driving_manager,hr.employee.driving.manager,hr.model_hr_employee,hr.group_hr_manager,1,1,1,1

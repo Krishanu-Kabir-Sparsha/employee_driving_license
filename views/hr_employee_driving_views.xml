@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Employee Form View to Add Driving License Section -->
+    <record id="view_employee_driving_license_form" model="ir.ui.view">
+        <field name="name">hr.employee.driving.license.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Driving License section after Identification ID section -->
+            <!-- <xpath expr="//notebook/page[@name='personal_information']/group[last()]" position="after"> -->
+            <xpath expr="//field[@name='identification_id']/.." position="after">    
+                <separator string="Driving License Information" colspan="4"/>
+                
+                <!-- Main Driving License Info -->
+                <group col="4" groups="hr.group_hr_user">
+                    <group colspan="2">
+                        <field name="has_driving_license" string="Has Driving License"/>
+                        <field name="driving_license_number"/>
+                        <field name="driving_license_type"/>
+                        <field name="license_status" readonly="1"/>
+                    </group>
+                    <group colspan="2">
+                        <field name="driving_license_issue_date"/>
+                        <field name="driving_license_expiry_date"/>
+                        <field name="driving_license_last_renewal"/>
+                        <field name="license_expiry_days" readonly="1"/>
+                    </group>
+                </group>
+                
+                <!-- Side by side License Categories and Other Fields -->
+                <group col="2" groups="hr.group_hr_user">
+                    <!-- Left Column - License Categories -->
+                    <group string="License Categories">
+                        <field name="license_category_motorcycle" widget="boolean_toggle"/>
+                        <field name="license_category_car" widget="boolean_toggle"/>
+                        <field name="license_category_truck" widget="boolean_toggle"/>
+                        <field name="license_category_bus" widget="boolean_toggle"/>
+                        <field name="license_category_special" widget="boolean_toggle"/>
+                        <field name="license_categories_other"/>
+                    </group>
+                    
+                    <!-- Right Column - Other Fields -->
+                    <group string="Additional Information">
+                        <field name="license_issuing_authority"/>
+                        <field name="license_issuing_country" options="{'no_create': True}"/>
+                        <field name="license_issuing_state"/>
+                        <field name="authorized_company_vehicle" widget="boolean_toggle"/>
+                        <field name="vehicle_authorization_date"/>
+                        <field name="preferred_vehicle_type"/>
+                        <field name="international_license_number"/>
+                        <field name="international_license_issue_date"/>
+                        <field name="international_license_expiry_date"/>
+                    </group>
+                </group>
+            </xpath>
+            
+            <!-- Add smart button in header -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_renew_license" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-id-card"
+                        groups="hr.group_hr_user">
+                    <div class="o_stat_info">
+                        <field name="license_expiry_days" class="o_stat_value"/>
+                        <span class="o_stat_text">Days to Expiry</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Employee tree View Extension -->
+    <record id="view_employee_driving_tree" model="ir.ui.view">
+        <field name="name">hr.employee.driving.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <field name="has_driving_license" optional="hide" groups="hr.group_hr_user"/>
+                <field name="license_status" optional="hide" groups="hr.group_hr_user"/>
+            </field>
+        </field>
+    </record>
+    
+    <!-- Employee Search View Extension -->
+    <record id="view_employee_driving_search" model="ir.ui.view">
+        <field name="name">hr.employee.driving.search</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <filter name="inactive" position="after">
+                <separator/>
+                <filter string="Has Driving License" name="has_license" domain="[('has_driving_license', '=', True)]" groups="hr.group_hr_user"/>
+                <filter string="Company Vehicle Authorized" name="authorized_vehicle" domain="[('authorized_company_vehicle', '=', True)]" groups="hr.group_hr_user"/>
+                <filter string="License Expiring" name="license_expiring" domain="[('license_status', '=', 'expiring_soon')]" groups="hr.group_hr_user"/>
+                <filter string="Clean Driving Record" name="clean_record" domain="[('clean_driving_record', '=', True)]" groups="hr.group_hr_user"/>
+            </filter>
+            <group position="inside">
+                <filter string="License Status" name="group_license_status" context="{'group_by': 'license_status'}" groups="hr.group_hr_user"/>
+                <filter string="License Type" name="group_license_type" context="{'group_by': 'driving_license_type'}" groups="hr.group_hr_user"/>
+            </group>
+        </field>
+    </record>
+</odoo>
