@@ -7,11 +7,20 @@
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <!-- Add Driving License section after Identification ID section -->
-            <!-- <xpath expr="//notebook/page[@name='personal_information']/group[last()]" position="after"> -->
-            <xpath expr="//field[@name='identification_id']/.." position="after">    
+            <xpath expr="//field[@name='identification_id']/.." position="after">
                 <separator string="Driving License Information" colspan="4"/>
+                <!-- Custom title with button -->
+                <!-- <div class="oe_title" groups="hr.group_hr_user" style="margin-bottom: 10px;">
+                    <h3 style="display: inline-block; margin-right: 10px;">Driving License Information</h3>
+                    <button name="action_view_license_details" 
+                            type="object" 
+                            string="→" 
+                            class="oe_link"
+                            title="View Additional Details"
+                            style="font-size: 18px; font-weight: bold;"/>
+                </div> -->
                 
-                <!-- Main Driving License Info -->
+                <!-- Main Driving License Info Only -->
                 <group col="4" groups="hr.group_hr_user">
                     <group colspan="2">
                         <field name="has_driving_license" string="Has Driving License"/>
@@ -24,37 +33,18 @@
                         <field name="driving_license_expiry_date"/>
                         <field name="driving_license_last_renewal"/>
                         <field name="license_expiry_days" readonly="1"/>
-                    </group>
-                </group>
-                
-                <!-- Side by side License Categories and Other Fields -->
-                <group col="2" groups="hr.group_hr_user">
-                    <!-- Left Column - License Categories -->
-                    <group string="License Categories">
-                        <field name="license_category_motorcycle" widget="boolean_toggle"/>
-                        <field name="license_category_car" widget="boolean_toggle"/>
-                        <field name="license_category_truck" widget="boolean_toggle"/>
-                        <field name="license_category_bus" widget="boolean_toggle"/>
-                        <field name="license_category_special" widget="boolean_toggle"/>
-                        <field name="license_categories_other"/>
-                    </group>
-                    
-                    <!-- Right Column - Other Fields -->
-                    <group string="Additional Information">
-                        <field name="license_issuing_authority"/>
-                        <field name="license_issuing_country" options="{'no_create': True}"/>
-                        <field name="license_issuing_state"/>
-                        <field name="authorized_company_vehicle" widget="boolean_toggle"/>
-                        <field name="vehicle_authorization_date"/>
-                        <field name="preferred_vehicle_type"/>
-                        <field name="international_license_number"/>
-                        <field name="international_license_issue_date"/>
-                        <field name="international_license_expiry_date"/>
+                        <div groups="hr.group_hr_user" style="margin-bottom: 10px;">
+                            <button name="action_view_license_details" 
+                                    type="object" 
+                                    string="View Additional Details →" 
+                                    class="oe_link"
+                                    style="font-size: 14px;"/>
+                        </div>
                     </group>
                 </group>
             </xpath>
             
-            <!-- Add smart button in header -->
+            <!-- Keep smart button in header -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_renew_license" 
                         type="object" 
@@ -69,8 +59,49 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Popup Form for License Details -->
+    <record id="view_employee_license_details_form" model="ir.ui.view">
+        <field name="name">hr.employee.license.details.form</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <form string="License Details">
+                <sheet>
+                    <h2>License Categories &amp; Additional Information</h2>
+                    <group col="2">
+                        <!-- Left Column - License Categories -->
+                        <group string="License Categories">
+                            <field name="license_category_motorcycle" widget="boolean_toggle"/>
+                            <field name="license_category_car" widget="boolean_toggle"/>
+                            <field name="license_category_truck" widget="boolean_toggle"/>
+                            <field name="license_category_bus" widget="boolean_toggle"/>
+                            <field name="license_category_special" widget="boolean_toggle"/>
+                            <field name="license_categories_other"/>
+                        </group>
+                        
+                        <!-- Right Column - Additional Information -->
+                        <group string="Other Information">
+                            <field name="license_issuing_authority"/>
+                            <field name="license_issuing_country" options="{'no_create': True}"/>
+                            <field name="license_issuing_state"/>
+                            <field name="authorized_company_vehicle" widget="boolean_toggle"/>
+                            <field name="vehicle_authorization_date"/>
+                            <field name="preferred_vehicle_type"/>
+                            <field name="international_license_number"/>
+                            <field name="international_license_issue_date"/>
+                            <field name="international_license_expiry_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Save" class="btn-primary" special="save"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
     
-    <!-- Employee tree View Extension -->
+    <!-- Keep other views unchanged -->
     <record id="view_employee_driving_tree" model="ir.ui.view">
         <field name="name">hr.employee.driving.tree</field>
         <field name="model">hr.employee</field>
@@ -83,7 +114,6 @@
         </field>
     </record>
     
-    <!-- Employee Search View Extension -->
     <record id="view_employee_driving_search" model="ir.ui.view">
         <field name="name">hr.employee.driving.search</field>
         <field name="model">hr.employee</field>

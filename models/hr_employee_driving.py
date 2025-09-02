@@ -136,3 +136,16 @@ class HrEmployeeDriving(models.Model):
                 'sticky': False,
             }
         }
+    
+    def action_view_license_details(self):
+        self.ensure_one()
+        return {
+            'name': _('License Details'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hr.employee',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'new',
+            'views': [(self.env.ref('employee_driving_license.view_employee_license_details_form').id, 'form')],
+            'context': {'form_view_initial_mode': 'edit'},
+        }
